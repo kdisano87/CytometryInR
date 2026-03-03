@@ -51,9 +51,9 @@ Let's start off by recalling the approach we first saw during [Week 03](/course/
 To do this, we first identified the .fcs files we were interested using `file.path()` to specify the folder, and `list.files()` to find contents containing ".fcs". 
 
 ```{r}
-# Folder <- file.path("course", "05_GatingSets", "data") # For Testing
+ Folder <- file.path("course", "05_GatingSets", "data") # For Testing
 
- Folder <- file.path("data") # For Quarto Rendering
+# Folder <- file.path("data") # For Quarto Rendering
 
 fcs_files <- list.files(Folder, pattern=".fcs", full.names=TRUE)
 
@@ -179,7 +179,7 @@ If we were curious how much memory total we are using within R at the current mo
 mem_used()
 ```
 
-Ultimately, how many .fcs files you are able to read in and interact with before running out of available RAM memory space will be dictated by your individual computers hardware configuration. You can check programmatically how much RAM you have available, although the specific function you will need to use will depend on your computer's operating system. 
+Ultimately, how many .fcs files you are able to read in and interact with before running out of available RAM memory space will be dictated by your individual computers hardware configuration. There are various ways you can check programmatically how much RAM your computer has available, although the specific functions will vary depending on your computers operating system, since they often involve system-level code outside R. Using the `ps` R package's `ps_system_memory()` function is one of the easier ways for Windows users.
 
 To simplify the process, here is an additional example of where a [conditional](/course/02_FilePaths/index.qmd#conditionals) can prove useful, allowing us to check in an operating system specific manner.  It takes the output of the `Sys.info()` function, namely the "sysname" argument and then retrieves the relavent function. 
 
@@ -188,7 +188,10 @@ To simplify the process, here is an additional example of where a [conditional](
 OperatingSystem <- Sys.info()[["sysname"]]
 
 if (OperatingSystem == "Windows") { # Windows
-    memory.limit()
+  # install.packages("ps") # CRAN
+   Memory <- ps::ps_system_memory()
+   message("Total GB ", round(Memory$total / 1024^3, 2))
+   message("Free GB ", round(Memory$free / 1024^3, 2))
 
   } else if (OperatingSystem == "Darwin") { # MacOS
     system("top -l 1 | grep PhysMem")

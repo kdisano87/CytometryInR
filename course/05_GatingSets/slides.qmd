@@ -334,7 +334,7 @@ mem_used()
 
 ::: {.fragment}
 ::: {.callout-tip title="."}
-Ultimately, how many .fcs files you are able to read in and interact with before running out of available RAM memory space will be dictated by your individual computers hardware configuration. You can check programmatically how much RAM you have available, although the specific function you will need to use will depend on your computer's operating system. 
+Ultimately, how many .fcs files you are able to read in and interact with before running out of available RAM memory space will be dictated by your individual computers hardware configuration. There are various ways you can check programmatically how much RAM your computer has available, although the specific functions will vary depending on your computers operating system, since they often involve system-level code outside R. Using the `ps` R package's `ps_system_memory()` function is one of the easier ways for Windows users.
 :::
 :::
 
@@ -352,7 +352,10 @@ To simplify the process, here is an additional example of where a [conditional](
 OperatingSystem <- Sys.info()[["sysname"]]
 
 if (OperatingSystem == "Windows") { # Windows
-    memory.limit()
+  # install.packages("ps") # CRAN
+   Memory <- ps::ps_system_memory()
+   message("Total GB ", round(Memory$total / 1024^3, 2))
+   message("Free GB ", round(Memory$free / 1024^3, 2))
 
   } else if (OperatingSystem == "Darwin") { # MacOS
     system("top -l 1 | grep PhysMem")
